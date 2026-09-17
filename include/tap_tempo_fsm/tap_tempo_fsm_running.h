@@ -5,8 +5,8 @@
 #ifndef TAP_TEMPO_FSM_RUNNING_H
 #define TAP_TEMPO_FSM_RUNNING_H
 
-void Running_Enter(void* context);
-void Running_Update(void* context);
-void Running_Exit(void* context);
+void Running_Enter(void* ctx);
+void Running_Update(void* ctx);
+void Running_Exit(void* ctx);
 
 #endif // TAP_TEMPO_FSM_RUNNING_H

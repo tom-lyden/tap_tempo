@@ -4,10 +4,6 @@ project(tap_tempo C)
 set(CMAKE_C_STANDARD 11)
 
 add_executable(tap_tempo src/main.c
-        src/tap_tempo_fsm/tap_tempo_fsm.c
-        include/tap_tempo_fsm/tap_tempo_fsm.h
-        src/tap_tempo_fsm/tap_tempo_fsm_running.c
-        src/tap_tempo_fsm/tap_tempo_fsm_reading.c
 )
 
 target_sources(tap_tempo
@@ -16,6 +12,9 @@ target_sources(tap_tempo
         drivers/src/button.c
         utils/src/timer.c
         utils/src/fsm.c
+        src/tap_tempo.c
+        src/tap_tempo_fsm/tap_tempo_fsm_running.c
+        src/tap_tempo_fsm/tap_tempo_fsm_reading.c
 )
 
 set_source_files_properties(platform/stm32f4xx_startup.c
@@ -38,8 +37,8 @@ target_link_libraries(tap_tempo
 
 target_include_directories(tap_tempo
         PRIVATE
+        drivers/include
+        utils/include
         include
         include/tap_tempo_fsm
-        utils/include
-        drivers/include
 )

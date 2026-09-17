@@ -5,8 +5,8 @@
 #ifndef TAP_TEMPO_FSM_READING_H
 #define TAP_TEMPO_FSM_READING_H
 
-void Reading_Enter(void* context);
-void Reading_Update(void* context);
-void Reading_Exit(void* context);
+void Reading_Enter(void* ctx);
+void Reading_Update(void* ctx);
+void Reading_Exit(void* ctx);
 
 #endif // TAP_TEMPO_FSM_READING_H

@@ -2,7 +2,6 @@
 #include <board_definition.h>
 #include <button.h>
 
-#define TICK_FREQUENCY_HZ (1000)
 #define DEBOUNCE_MSEC (1)
 #define DEBOUNCE_TICKS (((TICK_FREQUENCY_HZ) * (DEBOUNCE_MSEC)) / 1000)
 
@@ -35,12 +34,9 @@ int main(void)
 
 	GPIO_Init(BUTTON_GPIO_PORT, BUTTON_PIN, &gpio_input_init);
 
-	bool_t is_pressed = FALSE;
-
 	button_t button;
 	button_cfg_t button_cfg =
 	{
-		.on_pressed     = {.callback = register_press, .arg = &is_pressed},
 		.debounce_ticks = DEBOUNCE_TICKS,
 		.get_ticks      = SysTick_GetTick,
 		.gpio_port      = BUTTON_GPIO_PORT,
