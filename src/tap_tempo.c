@@ -37,7 +37,7 @@ void TapTempo_Init(tap_tempo_t* tap_tempo, const tap_tempo_cfg_t* cfg)
 	tap_tempo->high_duration_ticks = period_ticks * cfg->duty_cycle;
 	tap_tempo->low_duration_ticks = period_ticks * (1 - cfg->duty_cycle);
 	
-	tap_tempo->cfg = cfg;
+	tap_tempo->set_indicator = cfg->set_indicator;
 	
 	Timer_Init(&tap_tempo->led_timer, cfg->get_ticks);
 	Timer_Init(&tap_tempo->state_timer, cfg->get_ticks);
@@ -49,7 +49,7 @@ void TapTempo_Update(tap_tempo_t* tap_tempo)
 	FSM_Update(&tap_tempo->fsm, tap_tempo);
 }
 
-bool_t TapTempo_IsButtonPressed(const tap_tempo_t* tap_tempo)
+int TapTempo_IsButtonPressed(const tap_tempo_t* tap_tempo)
 {
 	return tap_tempo->button_press_count != tap_tempo->last_button_press_count;
 }

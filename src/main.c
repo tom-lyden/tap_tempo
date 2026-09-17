@@ -1,9 +1,12 @@
 #include <f401_re_hal.h>
 #include <board_definition.h>
 #include <button.h>
+#include <tap_tempo.h>
 
 #define DEBOUNCE_MSEC (1)
 #define DEBOUNCE_TICKS (((TICK_FREQUENCY_HZ) * (DEBOUNCE_MSEC)) / 1000)
+
+static void set_led_gpio(tap_tempo_indicator_state_t tap_tempo_indicator_state);
 
 int main(void)
 {
@@ -48,11 +51,28 @@ int main(void)
 	{
 		while (1);
 	}
+	
+	tap_tempo_t tap_tempo;
+	tap_tempo_cfg_t tap_tempo_cfg =
+	{
+		.get_ticks = SysTick_GetTick,
+		.set_indicator = set_led_gpio,
+		.duty_cycle = 0.5f,
+		.initial_tempo = DEFAULT_TEMPO
+	};
+	
+	TapTempo_Init(&tap_tempo, &tap_tempo_cfg);
 
 	while (1)
 	{
-		Button_Update(&button);
+		TapTempo_Update(&tap_tempo);
 	}
 
 	return 0;
+}
+
+static void set_led_gpio(tap_tempo_indicator_state_t state)
+{
+	gpio_state_t led_state = state == TAP_TEMPO_INDICATOR_STATE_HIGH ? GPIO_STATE_HIGH : GPIO_STATE_LOW;
+	GPIO_Write(LED_GPIO_PORT, LED_PIN_GREEN, led_state);
 }
