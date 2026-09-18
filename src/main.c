@@ -57,7 +57,7 @@ int main(void)
 	{
 		.get_ticks = SysTick_GetTick,
 		.set_indicator = set_led_gpio,
-		.duty_cycle = 0.5f,
+		.duty_cycle_percentage = DEFAULT_DUTY_CYCLE,
 		.initial_tempo = DEFAULT_TEMPO
 	};
 	

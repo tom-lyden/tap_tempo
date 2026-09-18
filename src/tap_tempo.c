@@ -34,8 +34,10 @@ void TapTempo_Init(tap_tempo_t* tap_tempo, const tap_tempo_cfg_t* cfg)
 	uint32_t clamped_tempo = CLAMP(cfg->initial_tempo, MIN_TEMPO, MAX_TEMPO);
 	uint64_t period_ticks = TEMPO_PERIOD_TICKS(clamped_tempo);
 	
-	tap_tempo->high_duration_ticks = period_ticks * cfg->duty_cycle;
-	tap_tempo->low_duration_ticks = period_ticks * (1 - cfg->duty_cycle);
+	uint8_t clamped_dc_percentage = CLAMP(cfg->duty_cycle_percentage, MIN_DUTY_CYCLE, MAX_DUTY_CYCLE);
+	
+	tap_tempo->high_duration_ticks = PERCENTAGE(period_ticks, clamped_dc_percentage);
+	tap_tempo->low_duration_ticks = PERCENTAGE(period_ticks, 100 - clamped_dc_percentage);
 	
 	tap_tempo->set_indicator = cfg->set_indicator;
 	

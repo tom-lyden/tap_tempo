@@ -13,6 +13,10 @@
 #define MAX_TEMPO (240)
 #define DEFAULT_TEMPO (120)
 
+#define MIN_DUTY_CYCLE (1)
+#define MAX_DUTY_CYCLE (99)
+#define DEFAULT_DUTY_CYCLE (50)
+
 typedef enum
 {
 	TAP_TEMPO_INDICATOR_STATE_LOW = 0,
@@ -25,7 +29,7 @@ typedef struct
 {
     get_ticks_t* get_ticks;
 	tap_tempo_set_indicator_t* set_indicator;
-	float duty_cycle;
+	uint8_t duty_cycle_percentage;
 	uint8_t initial_tempo;
 } tap_tempo_cfg_t;
 
