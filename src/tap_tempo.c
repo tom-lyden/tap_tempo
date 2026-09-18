@@ -29,8 +29,6 @@ static const fsm_state_t states[TAP_TEMPO_STATES] =
 
 void TapTempo_Init(tap_tempo_t* tap_tempo, const tap_tempo_cfg_t* cfg)
 {
-	tap_tempo->button_press_count = tap_tempo->last_button_press_count = 0;
-	
 	uint32_t clamped_tempo = CLAMP(cfg->initial_tempo, MIN_TEMPO, MAX_TEMPO);
 	uint64_t period_ticks = TEMPO_PERIOD_TICKS(clamped_tempo);
 	
@@ -51,7 +49,14 @@ void TapTempo_Update(tap_tempo_t* tap_tempo)
 	FSM_Update(&tap_tempo->fsm, tap_tempo);
 }
 
-int TapTempo_IsButtonPressed(const tap_tempo_t* tap_tempo)
+void TapTempo_ButtonPress(void* context)
 {
-	return tap_tempo->button_press_count != tap_tempo->last_button_press_count;
+	tap_tempo_t* tap_tempo = (tap_tempo_t*) context;
+	tap_tempo->set_indicator(TAP_TEMPO_INDICATOR_STATE_HIGH);
+}
+
+void TapTempo_ButtonRelease(void* context)
+{
+	tap_tempo_t* tap_tempo = (tap_tempo_t*) context;
+	tap_tempo->set_indicator(TAP_TEMPO_INDICATOR_STATE_LOW);
 }

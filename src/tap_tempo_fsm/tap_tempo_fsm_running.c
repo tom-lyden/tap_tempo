@@ -21,12 +21,6 @@ void Running_Update(void* ctx)
 {
 	tap_tempo_t* tap_tempo = (tap_tempo_t*)ctx;
 	
-	if (TapTempo_IsButtonPressed(tap_tempo))
-	{
-		FSM_SetState(&tap_tempo->fsm, READING_INPUT, ctx);	
-		return;
-	}
-	
 	if (Timer_GetState(&tap_tempo->led_timer) != TIMER_EXPIRED)
 		return;
 		

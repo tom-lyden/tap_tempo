@@ -42,13 +42,11 @@ typedef struct
 	uint32_t low_duration_ticks;
 	tap_tempo_set_indicator_t* set_indicator;
 	tap_tempo_indicator_state_t indicator_state;
-	volatile uint32_t button_press_count;
-	uint32_t last_button_press_count;
 } tap_tempo_t;
 
 void TapTempo_Init(tap_tempo_t* tap_tempo, const tap_tempo_cfg_t* cfg);
 void TapTempo_Update(tap_tempo_t* tap_tempo);
-
-int TapTempo_IsButtonPressed(const tap_tempo_t* tap_tempo);
+void TapTempo_ButtonPress(void* context);
+void TapTempo_ButtonRelease(void* context);
 
 #endif //TAP_TEMPO_TAP_TEMPO_H
