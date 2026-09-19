@@ -50,3 +50,13 @@ static void start_led_phase(tap_tempo_t* tap_tempo)
 	
 	Timer_Start(&tap_tempo->led_timer, duration_ticks);
 }
+
+void Running_ButtonPress(void* ctx)
+{
+	
+}
+
+void Running_ButtonRelease(void* ctx)
+{
+	
+}

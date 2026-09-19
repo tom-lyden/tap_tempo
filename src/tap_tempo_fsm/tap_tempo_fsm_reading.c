@@ -18,3 +18,12 @@ void Reading_Exit(void* ctx)
 {
 	
 }
+
+void Reading_ButtonPress(void* ctx)
+{
+	
+}
+void Reading_ButtonRelease(void* ctx)
+{
+	
+}

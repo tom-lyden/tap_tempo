@@ -36,6 +36,11 @@ void FSM_Update(fsm_t* fsm, void* ctx)
 	invoke_callback(callback, ctx);
 }
 
+const fsm_state_t* FSM_CurrentState(const fsm_t* fsm)
+{
+	return &fsm->states[fsm->current_state];
+}
+
 static void invoke_callback(fsm_callback_t* callback, void* arg)
 {
 	if (callback == NULL)

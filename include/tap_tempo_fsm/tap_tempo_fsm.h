@@ -5,6 +5,8 @@
 #ifndef TAP_TEMPO_TAP_TEMPO_FSM_H
 #define TAP_TEMPO_TAP_TEMPO_FSM_H
 
+#include <fsm.h>
+
 typedef enum
 {
 	RUNNING       = 0,

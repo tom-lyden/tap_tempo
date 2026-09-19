@@ -9,7 +9,7 @@ void Reading_Enter(void* ctx);
 void Reading_Update(void* ctx);
 void Reading_Exit(void* ctx);
 
-void Reading_ButtonPress(void* context);
-void Reading_ButtonRelease(void* context);
+void Reading_ButtonPress(void* ctx);
+void Reading_ButtonRelease(void* ctx);
 
 #endif // TAP_TEMPO_FSM_READING_H

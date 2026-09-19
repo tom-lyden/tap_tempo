@@ -31,14 +31,14 @@ static const fsm_state_t states[TAP_TEMPO_STATES] =
 			.on_enter = Running_Enter,
 			.update   = Running_Update,
 			.on_exit  = Running_Exit,
-			.extension = (void *)&running_extension,
+			.extension = &running_extension,
 		},
 	[READING_INPUT] = 
 	{
 			.on_enter = Reading_Enter,
 			.update   = Reading_Update,
 			.on_exit  = Reading_Exit,
-			.extension = (void *)&reading_extension,
+			.extension = &reading_extension,
 		},
 };
 
@@ -69,7 +69,7 @@ void TapTempo_ButtonPress(void* context)
 	tap_tempo_t* tap_tempo = (tap_tempo_t*) context;
 	const fsm_state_t* current_state = FSM_CurrentState(&tap_tempo->fsm);
 	
-	tap_tempo_fsm_state_ext_t* extension = (tap_tempo_fsm_state_ext_t *) current_state->extension;
+	const tap_tempo_fsm_state_ext_t* extension = (const tap_tempo_fsm_state_ext_t *) current_state->extension;
 	extension->on_button_press(context);
 }
 
@@ -78,6 +78,6 @@ void TapTempo_ButtonRelease(void* context)
 	tap_tempo_t* tap_tempo = (tap_tempo_t*) context;
 	const fsm_state_t* current_state = FSM_CurrentState(&tap_tempo->fsm);
 	
-	tap_tempo_fsm_state_ext_t* extension = (tap_tempo_fsm_state_ext_t *) current_state->extension;
+	const tap_tempo_fsm_state_ext_t* extension = (const tap_tempo_fsm_state_ext_t *) current_state->extension;
 	extension->on_button_release(context);
 }
