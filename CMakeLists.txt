@@ -11,10 +11,8 @@ target_sources(tap_tempo
         platform/stm32f4xx_startup.c
         drivers/src/button.c
         utils/src/timer.c
-        utils/src/fsm.c
+        utils/src/cqueue.c
         src/tap_tempo.c
-        src/tap_tempo_fsm/tap_tempo_fsm_running.c
-        src/tap_tempo_fsm/tap_tempo_fsm_reading.c
 )
 
 set_source_files_properties(platform/stm32f4xx_startup.c
@@ -40,5 +38,4 @@ target_include_directories(tap_tempo
         drivers/include
         utils/include
         include
-        include/tap_tempo_fsm
 )

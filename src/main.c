@@ -49,8 +49,8 @@ int main(void)
 	button_t button;
 	button_cfg_t button_cfg =
 	{
-		.on_press       = {.callback = TapTempo_ButtonPress, .arg = &tap_tempo},
-		.on_release     = {.callback = TapTempo_ButtonRelease, .arg = &tap_tempo},
+		.on_press       = { .callback = TapTempo_ButtonPress, .arg = &tap_tempo },
+		.on_release     = { .callback = TapTempo_ButtonRelease, .arg = &tap_tempo },
 		.debounce_ticks = DEBOUNCE_TICKS,
 		.get_ticks      = SysTick_GetTick,
 		.gpio_port      = BUTTON_GPIO_PORT,
@@ -65,6 +65,7 @@ int main(void)
 
 	TapTempo_Init(&tap_tempo, &tap_tempo_cfg);
 
+	TapTempo_Start(&tap_tempo);
 	while (1)
 	{
 		Button_Update(&button);

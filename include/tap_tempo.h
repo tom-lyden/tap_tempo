@@ -5,9 +5,9 @@
 #ifndef TAP_TEMPO_H
 #define TAP_TEMPO_H
 
+#include <cqueue.h>
 #include <stdint.h>
-#include <tap_tempo_fsm_reading.h>
-#include <tap_tempo_fsm_running.h>
+#include <timer.h>
 
 #define MIN_TEMPO (20)
 #define MAX_TEMPO (240)
@@ -16,6 +16,9 @@
 #define MIN_DUTY_CYCLE (1)
 #define MAX_DUTY_CYCLE (99)
 #define DEFAULT_DUTY_CYCLE (50)
+
+#define PERIOD_QUEUE_CAPACITY (4)
+#define MIN_DELTAS_FOR_TEMPO (2)
 
 typedef enum
 {
@@ -35,16 +38,22 @@ typedef struct
 
 typedef struct
 {
-	fsm_t fsm;
-	tap_tempo_fsm_running_state_t running_state;
-	tap_tempo_fsm_reading_state_t reading_state;
+	timer_t indicator_timer;
+	timer_t reset_input_timer;
+	tap_tempo_set_indicator_t* set_indicator;
+	get_ticks_t* get_ticks;
+	cqueue_t period_queue;
+	uint32_t queue_buffer[PERIOD_QUEUE_CAPACITY];
+	uint64_t running_delta_tick_sum;
+	uint32_t last_captured_ticks;
 	uint32_t high_duration_ticks;
 	uint32_t low_duration_ticks;
-	tap_tempo_set_indicator_t* set_indicator;
+	uint8_t duty_cycle_percentage;
 	tap_tempo_indicator_state_t indicator_state;
 } tap_tempo_t;
 
 void TapTempo_Init(tap_tempo_t* tap_tempo, const tap_tempo_cfg_t* cfg);
+void TapTempo_Start(tap_tempo_t* tap_tempo);
 void TapTempo_Update(tap_tempo_t* tap_tempo);
 void TapTempo_ButtonPress(void* ctx);
 void TapTempo_ButtonRelease(void* ctx);
