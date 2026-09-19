@@ -2,8 +2,8 @@
 // Created by tomly on 16/09/2026.
 //
 
-#ifndef LED_COUNTER_BUTTON_H
-#define LED_COUNTER_BUTTON_H
+#ifndef BUTTON_H
+#define BUTTON_H
 
 #include <stdint.h>
 #include <timer.h>
@@ -26,8 +26,8 @@ typedef struct
 typedef struct
 {
 	button_active_level_t active_level;
-	button_callback_t on_pressed;
-	button_callback_t on_released;
+	button_callback_t on_press;
+	button_callback_t on_release;
 	uint32_t debounce_ticks;
 	get_ticks_t* get_ticks;
 	gpio_port_t gpio_port;
@@ -37,8 +37,8 @@ typedef struct
 typedef struct
 {
 	button_active_level_t active_level;
-	button_callback_t on_pressed;
-	button_callback_t on_released;
+	button_callback_t on_press;
+	button_callback_t on_release;
 	timer_t debounce_timer;
 	uint32_t debounce_ticks;
 	gpio_port_t gpio_port;
@@ -51,4 +51,4 @@ typedef struct
 bool_t Button_Init(button_t* button, const button_cfg_t* cfg);
 void Button_Update(button_t* button);
 
-#endif //LED_COUNTER_BUTTON_H
+#endif // BUTTON_H

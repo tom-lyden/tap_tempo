@@ -39,13 +39,7 @@ extern uint32_t _edata[];
 extern uint32_t _bss[];
 extern uint32_t _ebss[];
 
-__attribute__ ((section
-(
-
-".isr_vector"
-)
-)
-)
+__attribute__ ((section(".isr_vector")))
 __attribute__ ((used)) // Force emission of this object despite not being used in this file
 const uint32_t isr_vector[] =
 {

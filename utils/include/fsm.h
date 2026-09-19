@@ -2,8 +2,8 @@
 // Created by tomly on 16/09/2026.
 //
 
-#ifndef TAP_TEMPO_FSM_H
-#define TAP_TEMPO_FSM_H
+#ifndef FSM_H
+#define FSM_H
 
 #include <stdint.h>
 
@@ -29,4 +29,4 @@ void FSM_Update(fsm_t* fsm, void* ctx);
 
 const fsm_state_t* FSM_CurrentState(const fsm_t* fsm);
 
-#endif //TAP_TEMPO_FSM_H
+#endif // FSM_H

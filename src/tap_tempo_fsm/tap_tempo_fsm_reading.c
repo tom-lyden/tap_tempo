@@ -6,24 +6,25 @@
 
 void Reading_Enter(void* ctx)
 {
-	
+
 }
 
 void Reading_Update(void* ctx)
 {
-	
+
 }
 
 void Reading_Exit(void* ctx)
 {
-	
+
 }
 
 void Reading_ButtonPress(void* ctx)
 {
-	
+
 }
+
 void Reading_ButtonRelease(void* ctx)
 {
-	
+
 }

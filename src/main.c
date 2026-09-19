@@ -36,21 +36,21 @@ int main(void)
 	};
 
 	GPIO_Init(BUTTON_GPIO_PORT, BUTTON_PIN, &gpio_input_init);
-	
+
 	tap_tempo_t tap_tempo;
 	tap_tempo_cfg_t tap_tempo_cfg =
 	{
-		.get_ticks = SysTick_GetTick,
-		.set_indicator = set_led_gpio,
+		.get_ticks             = SysTick_GetTick,
+		.set_indicator         = set_led_gpio,
 		.duty_cycle_percentage = DEFAULT_DUTY_CYCLE,
-		.initial_tempo = 20
+		.initial_tempo         = 20
 	};
 
 	button_t button;
 	button_cfg_t button_cfg =
 	{
-		.on_pressed = { .callback = TapTempo_ButtonPress, .arg = &tap_tempo },
-		.on_released = { .callback = TapTempo_ButtonRelease, .arg = &tap_tempo },
+		.on_press       = {.callback = TapTempo_ButtonPress, .arg = &tap_tempo},
+		.on_release     = {.callback = TapTempo_ButtonRelease, .arg = &tap_tempo},
 		.debounce_ticks = DEBOUNCE_TICKS,
 		.get_ticks      = SysTick_GetTick,
 		.gpio_port      = BUTTON_GPIO_PORT,
@@ -62,7 +62,7 @@ int main(void)
 	{
 		while (1);
 	}
-	
+
 	TapTempo_Init(&tap_tempo, &tap_tempo_cfg);
 
 	while (1)
