@@ -12,4 +12,10 @@ typedef enum
 	TAP_TEMPO_STATES
 } tap_tempo_fsm_state_t;
 
+typedef struct
+{
+	fsm_callback_t* on_button_press;
+	fsm_callback_t* on_button_release;
+} tap_tempo_fsm_state_ext_t;
+
 #endif //TAP_TEMPO_TAP_TEMPO_FSM_H
