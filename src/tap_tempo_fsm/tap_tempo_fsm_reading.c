@@ -4,27 +4,32 @@
 
 #include <tap_tempo_fsm_reading.h>
 
-void Reading_Enter(void* ctx)
+void TapTempoFSM_ReadingState_Init(tap_tempo_fsm_reading_state_t* state, get_ticks_t* get_ticks)
+{
+	Timer_Init(&state->timer, get_ticks);
+}
+
+void TapTempoFSM_ReadingState_Enter(void* ctx)
 {
 
 }
 
-void Reading_Update(void* ctx)
+void TapTempoFSM_ReadingState_Update(void* ctx)
 {
 
 }
 
-void Reading_Exit(void* ctx)
+void TapTempoFSM_ReadingState_Exit(void* ctx)
 {
 
 }
 
-void Reading_ButtonPress(void* ctx)
+void TapTempoFSM_ReadingState_ButtonPress(void* ctx)
 {
 
 }
 
-void Reading_ButtonRelease(void* ctx)
+void TapTempoFSM_ReadingState_ButtonRelease(void* ctx)
 {
 
 }

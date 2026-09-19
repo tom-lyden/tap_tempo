@@ -2,12 +2,12 @@
 // Created by tomly on 17/09/2026.
 //
 
-#ifndef TAP_TEMPO_TAP_TEMPO_H
-#define TAP_TEMPO_TAP_TEMPO_H
+#ifndef TAP_TEMPO_H
+#define TAP_TEMPO_H
 
 #include <stdint.h>
-#include <fsm.h>
-#include <timer.h>
+#include <tap_tempo_fsm_reading.h>
+#include <tap_tempo_fsm_running.h>
 
 #define MIN_TEMPO (20)
 #define MAX_TEMPO (240)
@@ -36,8 +36,8 @@ typedef struct
 typedef struct
 {
 	fsm_t fsm;
-	timer_t state_timer;
-	timer_t indicator_timer;
+	tap_tempo_fsm_running_state_t running_state;
+	tap_tempo_fsm_reading_state_t reading_state;
 	uint32_t high_duration_ticks;
 	uint32_t low_duration_ticks;
 	tap_tempo_set_indicator_t* set_indicator;
@@ -49,4 +49,4 @@ void TapTempo_Update(tap_tempo_t* tap_tempo);
 void TapTempo_ButtonPress(void* ctx);
 void TapTempo_ButtonRelease(void* ctx);
 
-#endif //TAP_TEMPO_TAP_TEMPO_H
+#endif // TAP_TEMPO_H

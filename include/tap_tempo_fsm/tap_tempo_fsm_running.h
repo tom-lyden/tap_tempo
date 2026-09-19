@@ -5,11 +5,22 @@
 #ifndef TAP_TEMPO_FSM_RUNNING_H
 #define TAP_TEMPO_FSM_RUNNING_H
 
-void Running_Enter(void* ctx);
-void Running_Update(void* ctx);
-void Running_Exit(void* ctx);
+#include <tap_tempo_fsm_state.h>
+#include <timer.h>
 
-void Running_ButtonPress(void* ctx);
-void Running_ButtonRelease(void* ctx);
+typedef struct
+{
+	tap_tempo_fsm_state_t base_state;
+	timer_t timer;
+} tap_tempo_fsm_running_state_t;
+
+void TapTempoFSM_RunningState_Init(tap_tempo_fsm_running_state_t* state, get_ticks_t* get_ticks);
+
+void TapTempoFSM_RunningState_Enter(void* ctx);
+void TapTempoFSM_RunningState_Update(void* ctx);
+void TapTempoFSM_RunningState_Exit(void* ctx);
+
+void TapTempoFSM_RunningState_ButtonPress(void* ctx);
+void TapTempoFSM_RunningState_ButtonRelease(void* ctx);
 
 #endif // TAP_TEMPO_FSM_RUNNING_H

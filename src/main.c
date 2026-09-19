@@ -43,7 +43,7 @@ int main(void)
 		.get_ticks             = SysTick_GetTick,
 		.set_indicator         = set_led_gpio,
 		.duty_cycle_percentage = DEFAULT_DUTY_CYCLE,
-		.initial_tempo         = 20
+		.initial_tempo         = DEFAULT_TEMPO
 	};
 
 	button_t button;

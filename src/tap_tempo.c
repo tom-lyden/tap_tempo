@@ -3,42 +3,43 @@
 //
 
 #include <tap_tempo.h>
+#include <fsm.h>
 #include <board_definition.h>
 #include <math_utils.h>
-#include <fsm.h>
-#include <tap_tempo_fsm.h>
+#include <tap_tempo_fsm_state.h>
 #include <tap_tempo_fsm_reading.h>
 #include <tap_tempo_fsm_running.h>
 
 #define TEMPO_PERIOD_TICKS(tempo) (60 * (TICK_FREQUENCY_HZ) / (tempo))
 
-static const tap_tempo_fsm_state_extension_t running_extension =
+static const tap_tempo_fsm_running_state_t running_state =
 {
-	.on_button_press   = Running_ButtonPress,
-	.on_button_release = Running_ButtonRelease,
-};
-
-static const tap_tempo_fsm_state_extension_t reading_extension =
-{
-	.on_button_press   = Reading_ButtonPress,
-	.on_button_release = Reading_ButtonRelease,
-};
-
-static const fsm_state_t states[TAP_TEMPO_STATE_COUNT] =
-{
-	[TAP_TEMPO_STATE_RUNNING] =
+	.base_state = 
 	{
-		.on_enter  = Running_Enter,
-		.update    = Running_Update,
-		.on_exit   = Running_Exit,
-		.extension = &running_extension,
-	},
-	[TAP_TEMPO_STATE_READING_INPUT] =
+		.base_state = 
+		{
+			.on_enter  = TapTempoFSM_RunningState_Enter,
+			.update    = TapTempoFSM_RunningState_Update,
+			.on_exit   = TapTempoFSM_RunningState_Exit,
+		},
+		.on_button_press   = TapTempoFSM_RunningState_ButtonPress,
+		.on_button_release = TapTempoFSM_RunningState_ButtonRelease,
+	}
+};
+	
+	
+static const tap_tempo_fsm_reading_state_t reading_state =
+{
+	.base_state =
 	{
-		.on_enter  = Reading_Enter,
-		.update    = Reading_Update,
-		.on_exit   = Reading_Exit,
-		.extension = &reading_extension,
+		.base_state = 
+		{
+			.on_enter  = TapTempoFSM_ReadingState_Enter,
+			.update    = TapTempoFSM_ReadingState_Update,
+			.on_exit   = TapTempoFSM_ReadingState_Exit,
+		},
+		.on_button_press   = TapTempoFSM_ReadingState_ButtonPress,
+		.on_button_release = TapTempoFSM_ReadingState_ButtonRelease,
 	},
 };
 
@@ -53,10 +54,17 @@ void TapTempo_Init(tap_tempo_t* tap_tempo, const tap_tempo_cfg_t* cfg)
 	tap_tempo->low_duration_ticks = PERCENTAGE(period_ticks, 100 - clamped_duty_cycle_percentage);
 
 	tap_tempo->set_indicator = cfg->set_indicator;
-
-	Timer_Init(&tap_tempo->indicator_timer, cfg->get_ticks);
-	Timer_Init(&tap_tempo->state_timer, cfg->get_ticks);
-	FSM_Init(&tap_tempo->fsm, states, TAP_TEMPO_STATE_RUNNING, tap_tempo);
+	
+	Timer_Init(&tap_tempo->running_state.timer, cfg->get_ticks);
+	Timer_Init(&tap_tempo->reading_state.timer, cfg->get_ticks);
+	
+	tap_tempo->running_state = running_state;
+	tap_tempo->reading_state = reading_state;
+	
+	TapTempoFSM_ReadingState_Init(&tap_tempo->reading_state, cfg->get_ticks);
+	TapTempoFSM_RunningState_Init(&tap_tempo->running_state, cfg->get_ticks);
+	
+	FSM_Init(&tap_tempo->fsm, (const fsm_state_t *)&tap_tempo->running_state, tap_tempo);
 }
 
 void TapTempo_Update(tap_tempo_t* tap_tempo)
@@ -67,17 +75,15 @@ void TapTempo_Update(tap_tempo_t* tap_tempo)
 void TapTempo_ButtonPress(void* ctx)
 {
 	tap_tempo_t* tap_tempo = (tap_tempo_t*)ctx;
-	const fsm_state_t* current_state = FSM_CurrentState(&tap_tempo->fsm);
+	const tap_tempo_fsm_state_t* current_state = (const tap_tempo_fsm_state_t *)tap_tempo->fsm.current_state;
 
-	const tap_tempo_fsm_state_extension_t* extension = (const tap_tempo_fsm_state_extension_t*)current_state->extension;
-	extension->on_button_press(ctx);
+	current_state->on_button_press(ctx);
 }
 
 void TapTempo_ButtonRelease(void* ctx)
 {
 	tap_tempo_t* tap_tempo = (tap_tempo_t*)ctx;
-	const fsm_state_t* current_state = FSM_CurrentState(&tap_tempo->fsm);
+	const tap_tempo_fsm_state_t* current_state = (const tap_tempo_fsm_state_t *)tap_tempo->fsm.current_state;
 
-	const tap_tempo_fsm_state_extension_t* extension = (const tap_tempo_fsm_state_extension_t*)current_state->extension;
-	extension->on_button_release(ctx);
+	current_state->on_button_release(ctx);
 }
