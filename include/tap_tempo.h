@@ -17,7 +17,7 @@
 #define MAX_DUTY_CYCLE (99)
 #define DEFAULT_DUTY_CYCLE (50)
 
-#define PERIOD_QUEUE_CAPACITY (2)
+#define INTERVAL_BUFFER_CAPACITY (2)
 #define MIN_DELTAS_FOR_TEMPO (2)
 
 typedef enum
@@ -39,13 +39,14 @@ typedef struct
 typedef struct
 {
 	timer_t indicator_timer;
-	timer_t reset_input_timer;
+	timer_t input_reset_timer;
 	tap_tempo_set_indicator_t* set_indicator;
 	get_ticks_t* get_ticks;
-	cqueue_t period_queue;
-	uint32_t queue_buffer[PERIOD_QUEUE_CAPACITY];
-	uint64_t running_delta_tick_sum;
-	uint32_t last_captured_ticks;
+	cqueue_t interval_queue;
+	uint32_t interval_buffer[INTERVAL_BUFFER_CAPACITY];
+	uint64_t interval_tick_sum;
+	uint32_t last_tap_tick;
+	bool_t has_previous_ticks;
 	uint32_t high_duration_ticks;
 	uint32_t low_duration_ticks;
 	uint8_t duty_cycle_percentage;
