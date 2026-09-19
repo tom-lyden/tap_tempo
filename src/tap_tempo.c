@@ -14,7 +14,7 @@
 
 static const tap_tempo_fsm_running_state_t running_state =
 {
-	.base_state = 
+	.tap_tempo_state = 
 	{
 		.base_state = 
 		{
@@ -30,7 +30,7 @@ static const tap_tempo_fsm_running_state_t running_state =
 	
 static const tap_tempo_fsm_reading_state_t reading_state =
 {
-	.base_state =
+	.tap_tempo_state =
 	{
 		.base_state = 
 		{
@@ -54,9 +54,6 @@ void TapTempo_Init(tap_tempo_t* tap_tempo, const tap_tempo_cfg_t* cfg)
 	tap_tempo->low_duration_ticks = PERCENTAGE(period_ticks, 100 - clamped_duty_cycle_percentage);
 
 	tap_tempo->set_indicator = cfg->set_indicator;
-	
-	Timer_Init(&tap_tempo->running_state.timer, cfg->get_ticks);
-	Timer_Init(&tap_tempo->reading_state.timer, cfg->get_ticks);
 	
 	tap_tempo->running_state = running_state;
 	tap_tempo->reading_state = reading_state;

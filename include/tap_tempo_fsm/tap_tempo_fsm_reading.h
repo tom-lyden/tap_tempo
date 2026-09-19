@@ -10,7 +10,7 @@
 
 typedef struct
 {
-	tap_tempo_fsm_state_t base_state;
+	tap_tempo_fsm_state_t tap_tempo_state;
 	timer_t timer;
 } tap_tempo_fsm_reading_state_t;
 
