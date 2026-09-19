@@ -17,7 +17,7 @@
 #define MAX_DUTY_CYCLE (99)
 #define DEFAULT_DUTY_CYCLE (50)
 
-#define PERIOD_QUEUE_CAPACITY (4)
+#define PERIOD_QUEUE_CAPACITY (2)
 #define MIN_DELTAS_FOR_TEMPO (2)
 
 typedef enum
