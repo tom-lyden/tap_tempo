@@ -3,6 +3,7 @@
 #include <button.h>
 #include <tap_tempo.h>
 
+#define TICK_FREQUENCY_HZ (1000)
 #define DEBOUNCE_MSEC (1)
 #define DEBOUNCE_TICKS (((TICK_FREQUENCY_HZ) * (DEBOUNCE_MSEC)) / 1000)
 
@@ -33,6 +34,8 @@ int main(void)
 		.mode = GPIO_MODE_INPUT,
 		.pupd = GPIO_PUPD_PULLDOWN,
 	};
+	
+	GPIO_Write(LED_GPIO_PORT, LED_PIN_GREEN, GPIO_STATE_LOW);
 
 	GPIO_Init(BUTTON_GPIO_PORT, BUTTON_PIN, &gpio_input_init);
 
@@ -40,6 +43,7 @@ int main(void)
 	tap_tempo_cfg_t tap_tempo_cfg =
 	{
 		.get_ticks             = SysTick_GetTick,
+		.tick_frequency        = TICK_FREQUENCY_HZ,
 		.set_indicator         = set_led_gpio,
 		.duty_cycle_percentage = DEFAULT_DUTY_CYCLE,
 		.initial_tempo         = DEFAULT_TEMPO

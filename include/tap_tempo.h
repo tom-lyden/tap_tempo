@@ -8,8 +8,7 @@
 #include <cqueue.h>
 #include <stdint.h>
 #include <timer.h>
-
-#define TICK_FREQUENCY_HZ (1000)
+#include <stdbool.h>
 
 #define MIN_TEMPO (20)
 #define MAX_TEMPO (240)
@@ -20,7 +19,7 @@
 #define DEFAULT_DUTY_CYCLE (50)
 
 #define INTERVAL_BUFFER_CAPACITY (2)
-#define MIN_DELTAS_FOR_TEMPO (2)
+#define MIN_INTERVALS_FOR_TEMPO (2)
 
 typedef enum
 {
@@ -33,6 +32,7 @@ typedef void tap_tempo_set_indicator_t(tap_tempo_indicator_state_t);
 typedef struct
 {
 	get_ticks_t* get_ticks;
+	uint32_t tick_frequency;
 	tap_tempo_set_indicator_t* set_indicator;
 	uint8_t duty_cycle_percentage;
 	uint8_t initial_tempo;
@@ -40,19 +40,24 @@ typedef struct
 
 typedef struct
 {
+	uint32_t min_interval_ticks;
+	uint32_t max_interval_ticks;
+	uint32_t reset_interval_ticks;
+	uint8_t duty_cycle_percentage;
+	
 	timer_t indicator_timer;
-	timer_t input_reset_timer;
 	tap_tempo_set_indicator_t* set_indicator;
+	uint32_t high_duration_ticks;
+	uint32_t low_duration_ticks;
+	tap_tempo_indicator_state_t indicator_state;
+	
+	timer_t input_reset_timer;
 	get_ticks_t* get_ticks;
 	cqueue_t interval_queue;
 	uint32_t interval_buffer[INTERVAL_BUFFER_CAPACITY];
 	uint64_t interval_tick_sum;
-	uint32_t last_tap_tick;
-	bool_t has_previous_ticks;
-	uint32_t high_duration_ticks;
-	uint32_t low_duration_ticks;
-	uint8_t duty_cycle_percentage;
-	tap_tempo_indicator_state_t indicator_state;
+	uint32_t previous_tap_ticks;
+	bool has_previous_tap;
 } tap_tempo_t;
 
 void TapTempo_Init(tap_tempo_t* tap_tempo, const tap_tempo_cfg_t* cfg);

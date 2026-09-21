@@ -5,6 +5,8 @@
 #ifndef TAP_TEMPO_BOARD_DEFINITION_H
 #define TAP_TEMPO_BOARD_DEFINITION_H
 
+#include <f401_re_hal.h>
+
 #define LED_GPIO_PORT (GPIO_PORT_B)
 #define LED_PIN_GREEN (GPIO_PIN_14)
 

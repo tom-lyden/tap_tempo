@@ -13,36 +13,36 @@ void CQueue_Init(cqueue_t* queue, uint32_t* buffer, uint8_t capacity)
 	queue->count = 0;
 }
 
-bool_t CQueue_Push(cqueue_t* queue, uint32_t value)
+bool CQueue_Push(cqueue_t* queue, uint32_t value)
 {
 	if (CQueue_IsFull(queue))
-		return FALSE;
+		return false;
 	
 	queue->buffer[queue->head] = value;
 	queue->head = (queue->head + 1) % queue->capacity;
 	queue->count++;
 	
-	return TRUE;
+	return true;
 }
 
-bool_t CQueue_Pop(cqueue_t* queue, uint32_t* value)
+bool CQueue_Pop(cqueue_t* queue, uint32_t* value)
 {
 	if (CQueue_IsEmpty(queue))
-		return FALSE;
+		return false;
 	
 	*value = queue->buffer[queue->tail];
 	queue->tail = (queue->tail + 1) % queue->capacity;
 	queue->count--;
 	
-	return TRUE;
+	return true;
 }
 
-bool_t CQueue_IsEmpty(const cqueue_t* queue)
+bool CQueue_IsEmpty(const cqueue_t* queue)
 {
 	return queue->count == 0;
 }
 
-bool_t CQueue_IsFull(const cqueue_t* queue)
+bool CQueue_IsFull(const cqueue_t* queue)
 {
 	return queue->count == queue->capacity;
 }
