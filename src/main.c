@@ -2,6 +2,7 @@
 #include <board_definition.h>
 #include <button.h>
 #include <tap_tempo.h>
+#include <stdbool.h>
 
 #define TICK_FREQUENCY_HZ (1000)
 #define DEBOUNCE_MSEC (1)
@@ -15,12 +16,14 @@ int main(void)
 	{
 		.tick_freq      = TICK_FREQUENCY_HZ,
 		.clk_src        = SYSTICK_CLK_SRC_AHB_DIV_8,
-		.enable_irq     = TRUE,
-		.enable_counter = TRUE
+		.enable_irq     = true,
+		.enable_counter = true
 	};
 
-	if (SysTick_Init(&systick_cfg) != TRUE)
-		return -1;
+	if (SysTick_Init(&systick_cfg) != true)
+	{
+		while (1);
+	}
 
 	gpio_config_t gpio_output_init =
 	{

@@ -6,6 +6,7 @@
 #define BUTTON_H
 
 #include <stdint.h>
+#include <stdbool.h>
 #include <timer.h>
 #include <f401_re_hal.h>
 
@@ -48,7 +49,7 @@ typedef struct
 	uint32_t last_seen_edge_counter;
 } button_t;
 
-bool_t Button_Init(button_t* button, const button_cfg_t* cfg);
+bool Button_Init(button_t* button, const button_cfg_t* cfg);
 void Button_Update(button_t* button);
 
 #endif // BUTTON_H
