@@ -3,7 +3,6 @@
 //
 
 #include <tap_tempo.h>
-#include <board_definition.h>
 #include <math_utils.h>
 #include <cqueue.h>
 
@@ -12,7 +11,7 @@
 #define MAX_TEMPO_PERIOD_TICKS (TEMPO_PERIOD_TICKS(MIN_TEMPO))
 #define INPUT_RESET_TICKS ((MAX_TEMPO_PERIOD_TICKS) * 3 / 2)
 
-static void set_durations(tap_tempo_t* tap_tempo, uint64_t period_ticks);
+static void set_durations(tap_tempo_t* tap_tempo, uint32_t period_ticks);
 static void start_indicator_phase(tap_tempo_t* tap_tempo);
 
 void TapTempo_Init(tap_tempo_t* tap_tempo, const tap_tempo_cfg_t* cfg)
@@ -22,7 +21,7 @@ void TapTempo_Init(tap_tempo_t* tap_tempo, const tap_tempo_cfg_t* cfg)
 	tap_tempo->has_previous_ticks = FALSE;
 	
 	tap_tempo->duty_cycle_percentage = CLAMP(cfg->duty_cycle_percentage, MIN_DUTY_CYCLE, MAX_DUTY_CYCLE);
-	uint64_t period_ticks = TEMPO_PERIOD_TICKS(CLAMP(cfg->initial_tempo, MIN_TEMPO, MAX_TEMPO));
+	uint32_t period_ticks = TEMPO_PERIOD_TICKS(CLAMP(cfg->initial_tempo, MIN_TEMPO, MAX_TEMPO));
 	set_durations(tap_tempo, period_ticks);
 	
 	CQueue_Init(&tap_tempo->interval_queue, tap_tempo->interval_buffer, INTERVAL_BUFFER_CAPACITY);
@@ -112,7 +111,7 @@ void TapTempo_ButtonRelease(void* ctx)
 	Timer_Start(&tap_tempo->input_reset_timer, INPUT_RESET_TICKS);
 }
 
-static void set_durations(tap_tempo_t* tap_tempo, uint64_t period_ticks)
+static void set_durations(tap_tempo_t* tap_tempo, uint32_t period_ticks)
 {
 	uint32_t clamped_period_ticks = CLAMP(period_ticks, MIN_TEMPO_PERIOD_TICKS, MAX_TEMPO_PERIOD_TICKS);
 	

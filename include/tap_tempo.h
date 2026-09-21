@@ -9,6 +9,8 @@
 #include <stdint.h>
 #include <timer.h>
 
+#define TICK_FREQUENCY_HZ (1000)
+
 #define MIN_TEMPO (20)
 #define MAX_TEMPO (240)
 #define DEFAULT_TEMPO (120)

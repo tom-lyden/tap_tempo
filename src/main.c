@@ -26,7 +26,6 @@ int main(void)
 		.mode = GPIO_MODE_OUTPUT,
 	};
 
-	GPIO_Init(LED_GPIO_PORT, LED_PIN_RED, &gpio_output_init);
 	GPIO_Init(LED_GPIO_PORT, LED_PIN_GREEN, &gpio_output_init);
 
 	gpio_config_t gpio_input_init =
@@ -64,8 +63,8 @@ int main(void)
 	}
 
 	TapTempo_Init(&tap_tempo, &tap_tempo_cfg);
-
 	TapTempo_Start(&tap_tempo);
+
 	while (1)
 	{
 		Button_Update(&button);

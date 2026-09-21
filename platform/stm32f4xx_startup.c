@@ -11,8 +11,8 @@
 #define WEAK_HANDLER(handler) void handler(void) __attribute__((weak, alias("Default_Handler")))
 
 int main(void);
-void Default_Handler(void);
-void Reset_Handler(void);
+static void Reset_Handler(void);
+static void Default_Handler(void);
 
 WEAK_HANDLER(NMI_Handler);
 WEAK_HANDLER(HardFault_Handler);
