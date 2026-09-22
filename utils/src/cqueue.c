@@ -17,11 +17,11 @@ bool CQueue_Push(cqueue_t* queue, uint32_t value)
 {
 	if (CQueue_IsFull(queue))
 		return false;
-	
+
 	queue->buffer[queue->head] = value;
 	queue->head = (queue->head + 1) % queue->capacity;
 	queue->count++;
-	
+
 	return true;
 }
 
@@ -29,11 +29,11 @@ bool CQueue_Pop(cqueue_t* queue, uint32_t* value)
 {
 	if (CQueue_IsEmpty(queue))
 		return false;
-	
+
 	*value = queue->buffer[queue->tail];
 	queue->tail = (queue->tail + 1) % queue->capacity;
 	queue->count--;
-	
+
 	return true;
 }
 

@@ -24,7 +24,7 @@ include(FetchContent)
 FetchContent_Declare(
         f401_re_hal
         GIT_REPOSITORY https://github.com/tom-lyden/f401_re_hal.git
-        GIT_TAG v0.1.1
+        GIT_TAG v0.1.0
 )
 
 FetchContent_MakeAvailable(f401_re_hal)

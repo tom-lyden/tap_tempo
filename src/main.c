@@ -14,10 +14,10 @@ int main(void)
 {
 	systick_cfg_t systick_cfg =
 	{
-		.tick_freq      = TICK_FREQUENCY_HZ,
-		.clk_src        = SYSTICK_CLK_SRC_AHB_DIV_8,
-		.enable_irq     = true,
-		.enable_counter = true
+		.tick_frequency_hz = TICK_FREQUENCY_HZ,
+		.clk_src           = SYSTICK_CLK_SRC_AHB_DIV_8,
+		.enable_irq        = true,
+		.enable_counter    = true
 	};
 
 	if (SysTick_Init(&systick_cfg) != true)
@@ -37,7 +37,7 @@ int main(void)
 		.mode = GPIO_MODE_INPUT,
 		.pupd = GPIO_PUPD_PULLDOWN,
 	};
-	
+
 	GPIO_Write(LED_GPIO_PORT, LED_PIN_GREEN, GPIO_STATE_LOW);
 
 	GPIO_Init(BUTTON_GPIO_PORT, BUTTON_PIN, &gpio_input_init);
@@ -46,10 +46,10 @@ int main(void)
 	tap_tempo_cfg_t tap_tempo_cfg =
 	{
 		.get_ticks             = SysTick_GetTick,
-		.tick_frequency        = TICK_FREQUENCY_HZ,
+		.tick_frequency_hz     = TICK_FREQUENCY_HZ,
 		.set_indicator         = set_led_gpio,
-		.duty_cycle_percentage = DEFAULT_DUTY_CYCLE,
-		.initial_tempo         = DEFAULT_TEMPO
+		.duty_cycle_percentage = TAP_TEMPO_DEFAULT_DUTY_CYCLE,
+		.initial_tempo         = TAP_TEMPO_DEFAULT_BPM
 	};
 
 	button_t button;
