@@ -12,15 +12,7 @@ static void set_led_gpio(tap_tempo_indicator_state_t tap_tempo_indicator_state);
 
 int main(void)
 {
-	systick_cfg_t systick_cfg =
-	{
-		.tick_frequency_hz = TICK_FREQUENCY_HZ,
-		.clk_src           = SYSTICK_CLK_SRC_AHB_DIV_8,
-		.enable_irq        = true,
-		.enable_counter    = true
-	};
-
-	if (SysTick_Init(&systick_cfg) != true)
+	if (Ticks_Init(TICK_FREQUENCY_HZ) != true)
 	{
 		while (1);
 	}
@@ -30,7 +22,7 @@ int main(void)
 		.mode = GPIO_MODE_OUTPUT,
 	};
 
-	GPIO_Init(LED_GPIO_PORT, LED_PIN_GREEN, &gpio_output_init);
+	GPIO_Init(LED_GPIO_PORT, LED_PIN, &gpio_output_init);
 
 	gpio_config_t gpio_input_init =
 	{
@@ -38,14 +30,14 @@ int main(void)
 		.pupd = GPIO_PUPD_PULLDOWN,
 	};
 
-	GPIO_Write(LED_GPIO_PORT, LED_PIN_GREEN, GPIO_STATE_LOW);
+	GPIO_Write(LED_GPIO_PORT, LED_PIN, GPIO_STATE_LOW);
 
 	GPIO_Init(BUTTON_GPIO_PORT, BUTTON_PIN, &gpio_input_init);
 
 	tap_tempo_t tap_tempo;
 	tap_tempo_cfg_t tap_tempo_cfg =
 	{
-		.get_ticks             = SysTick_GetTick,
+		.get_ticks             = Ticks_GetTick,
 		.tick_frequency_hz     = TICK_FREQUENCY_HZ,
 		.set_indicator         = set_led_gpio,
 		.duty_cycle_percentage = TAP_TEMPO_DEFAULT_DUTY_CYCLE,
@@ -58,7 +50,7 @@ int main(void)
 		.on_press       = { .callback = TapTempo_ButtonPress, .arg = &tap_tempo },
 		.on_release     = { .callback = TapTempo_ButtonRelease, .arg = &tap_tempo },
 		.debounce_ticks = DEBOUNCE_TICKS,
-		.get_ticks      = SysTick_GetTick,
+		.get_ticks      = Ticks_GetTick,
 		.gpio_port      = BUTTON_GPIO_PORT,
 		.gpio_pin       = BUTTON_PIN,
 		.active_level   = BUTTON_ACTIVE_HIGH
@@ -84,5 +76,5 @@ int main(void)
 static void set_led_gpio(tap_tempo_indicator_state_t state)
 {
 	gpio_state_t led_state = state == TAP_TEMPO_INDICATOR_STATE_HIGH ? GPIO_STATE_HIGH : GPIO_STATE_LOW;
-	GPIO_Write(LED_GPIO_PORT, LED_PIN_GREEN, led_state);
+	GPIO_Write(LED_GPIO_PORT, LED_PIN, led_state);
 }

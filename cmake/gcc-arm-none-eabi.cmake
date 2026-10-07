@@ -17,7 +17,6 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${TARGET_FLAGS}")
 set(CMAKE_ASM_FLAGS "${CMAKE_C_FLAGS} -x assembler-with-cpp -MMD -MP")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -fdata-sections -ffunction-sections -fstack-usage")
 
-set(CMAKE_EXE_LINKER_FLAGS "-T \"${CMAKE_SOURCE_DIR}/platform/stm32f4xx_flash.ld\"
-                            -Wl,-Map=${CMAKE_PROJECT_NAME}.map -Wl,--gc-sections
+set(CMAKE_EXE_LINKER_FLAGS "-Wl,-Map=${CMAKE_PROJECT_NAME}.map -Wl,--gc-sections
                             -z noexecstack
                             -Wl,--print-memory-usage ")

@@ -8,7 +8,7 @@
 #include <f401_re_hal.h>
 
 #define LED_GPIO_PORT (GPIO_PORT_B)
-#define LED_PIN_GREEN (GPIO_PIN_14)
+#define LED_PIN (GPIO_PIN_14)
 
 #define BUTTON_GPIO_PORT (GPIO_PORT_C)
 #define BUTTON_PIN (GPIO_PIN_10)

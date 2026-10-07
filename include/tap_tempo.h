@@ -55,7 +55,7 @@ typedef struct
 	get_ticks_t* get_ticks;
 	cqueue_t interval_queue;
 	uint32_t interval_buffer[TAP_TEMPO_INTERVAL_BUFFER_CAPACITY];
-	uint64_t interval_tick_sum;
+	uint32_t interval_tick_sum;
 	uint32_t previous_tap_ticks;
 	bool has_previous_tap;
 } tap_tempo_t;
