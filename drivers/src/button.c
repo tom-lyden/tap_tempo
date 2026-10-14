@@ -32,6 +32,14 @@ bool Button_Init(button_t* button, const button_cfg_t* cfg)
 		.callback_arg = button
 	};
 
+	gpio_config_t gpio_input_init =
+	{
+		.mode = GPIO_MODE_INPUT,
+		.pupd = GPIO_PUPD_PULLDOWN,
+	};
+
+	GPIO_Init(button->gpio_port, button->gpio_pin, &gpio_input_init);
+
 	return GPIO_EnableInterrupt(cfg->gpio_port, cfg->gpio_pin, &gpio_interrupt);
 }
 

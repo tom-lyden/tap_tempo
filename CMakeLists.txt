@@ -9,6 +9,7 @@ add_executable(tap_tempo src/main.c
 target_sources(tap_tempo
         PRIVATE
         drivers/src/button.c
+        drivers/src/ssd1306.c
         utils/src/timer.c
         utils/src/cqueue.c
         src/tap_tempo.c
