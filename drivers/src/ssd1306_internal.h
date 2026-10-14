@@ -10,9 +10,6 @@
 #include <i2c.h>
 #include <ssd1306.h>
 
-#define SSD1306_NUM_PAGES (8)
-#define SSD1306_NUM_BUFFERS (2)
-
 #define SSD1306_TARGET_ADDRESS (0x3C)
 
 #define SSD1306_CMD_CONTINUATION_BIT (7)

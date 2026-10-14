@@ -7,6 +7,10 @@
 
 #include <f401_re_hal.h>
 
+#define SSD1306_I2C_BUS (I2C_BUS_2)
+#define SSD1306_I2C_SDA_PIN (I2C2_SDA_PB3)
+#define SSD1306_I2C_SCL_PIN (I2C2_SCL_PB10)
+
 #define LED_GPIO_PORT (GPIO_PORT_B)
 #define LED_PIN (GPIO_PIN_14)
 

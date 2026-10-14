@@ -5,30 +5,35 @@
 #include <tap_tempo.h>
 #include <math_utils.h>
 #include <cqueue.h>
+#include <stddef.h>
 
 static void set_durations(tap_tempo_t* tap_tempo, uint32_t period_ticks);
 static void start_indicator_phase(tap_tempo_t* tap_tempo);
-static inline uint32_t tempo_period_ticks(const tap_tempo_cfg_t* tap_tempo_cfg, uint32_t tempo);
+static inline uint32_t tempo_to_period_ticks(const tap_tempo_cfg_t* tap_tempo_cfg, uint32_t tempo);
+static inline uint8_t period_ticks_to_tempo(const tap_tempo_t* tap_tempo, uint32_t period_ticks);
 
 void TapTempo_Init(tap_tempo_t* tap_tempo, const tap_tempo_cfg_t* cfg)
 {
+	tap_tempo->set_indicator = cfg->set_indicator;
+	tap_tempo->get_ticks = cfg->get_ticks;
+	tap_tempo->on_new_tempo = cfg->on_new_tempo;
+	tap_tempo->on_new_tempo_ctx = cfg->on_new_tempo_ctx;
+
 	tap_tempo->interval_tick_sum = 0;
 	tap_tempo->previous_tap_ticks = 0;
 	tap_tempo->has_previous_tap = false;
 
 	CQueue_Init(&tap_tempo->interval_queue, tap_tempo->interval_buffer, TAP_TEMPO_INTERVAL_BUFFER_CAPACITY);
 
-	tap_tempo->min_interval_ticks = tempo_period_ticks(cfg, TAP_TEMPO_MAX_BPM);
-	tap_tempo->max_interval_ticks = tempo_period_ticks(cfg, TAP_TEMPO_MIN_BPM);
+	tap_tempo->tick_frequency_hz = cfg->tick_frequency_hz;
+	tap_tempo->min_interval_ticks = tempo_to_period_ticks(cfg, TAP_TEMPO_MAX_BPM);
+	tap_tempo->max_interval_ticks = tempo_to_period_ticks(cfg, TAP_TEMPO_MIN_BPM);
 	tap_tempo->reset_interval_ticks = tap_tempo->max_interval_ticks + tap_tempo->max_interval_ticks / 2;
 	tap_tempo->duty_cycle_percentage = CLAMP(cfg->duty_cycle_percentage, TAP_TEMPO_MIN_DUTY_CYCLE, TAP_TEMPO_MAX_DUTY_CYCLE);
 
 	uint8_t clamped_tempo = CLAMP(cfg->initial_tempo, TAP_TEMPO_MIN_BPM, TAP_TEMPO_MAX_BPM);
-	uint32_t period_ticks = tempo_period_ticks(cfg, clamped_tempo);
+	uint32_t period_ticks = tempo_to_period_ticks(cfg, clamped_tempo);
 	set_durations(tap_tempo, period_ticks);
-
-	tap_tempo->set_indicator = cfg->set_indicator;
-	tap_tempo->get_ticks = cfg->get_ticks;
 
 	Timer_Init(&tap_tempo->indicator_timer, cfg->get_ticks);
 	Timer_Init(&tap_tempo->input_reset_timer, cfg->get_ticks);
@@ -118,6 +123,12 @@ static void set_durations(tap_tempo_t* tap_tempo, uint32_t period_ticks)
 
 	tap_tempo->high_duration_ticks = PERCENTAGE(clamped_period_ticks, tap_tempo->duty_cycle_percentage);
 	tap_tempo->low_duration_ticks = PERCENTAGE(clamped_period_ticks, 100 - tap_tempo->duty_cycle_percentage);
+	
+	if (tap_tempo->on_new_tempo != NULL)
+	{
+		uint8_t new_tempo_bpm = period_ticks_to_tempo(tap_tempo, clamped_period_ticks);
+		tap_tempo->on_new_tempo(tap_tempo->on_new_tempo_ctx, new_tempo_bpm);
+	}
 }
 
 static void start_indicator_phase(tap_tempo_t* tap_tempo)
@@ -131,7 +142,12 @@ static void start_indicator_phase(tap_tempo_t* tap_tempo)
 	Timer_Start(&tap_tempo->indicator_timer, duration_ticks);
 }
 
-static inline uint32_t tempo_period_ticks(const tap_tempo_cfg_t* tap_tempo_cfg, uint32_t tempo)
+static inline uint32_t tempo_to_period_ticks(const tap_tempo_cfg_t* tap_tempo_cfg, uint32_t tempo)
 {
 	return 60 * tap_tempo_cfg->tick_frequency_hz / tempo;
+}
+
+static inline uint8_t period_ticks_to_tempo(const tap_tempo_t* tap_tempo, uint32_t period_ticks)
+{
+	return 60 * tap_tempo->tick_frequency_hz / period_ticks;
 }

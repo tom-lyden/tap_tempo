@@ -5,13 +5,15 @@
 #ifndef I2C_TEST_SSD1306_H
 #define I2C_TEST_SSD1306_H
 
-#include "ssd1306_internal.h"
 #include <i2c.h>
 #include <stdbool.h>
 #include <stdint.h>
 
 #define SSD1306_NUM_ROWS (64)
 #define SSD1306_NUM_COLUMNS (128)
+
+#define SSD1306_NUM_PAGES (8)
+#define SSD1306_NUM_BUFFERS (2)
 
 typedef enum
 {

@@ -12,6 +12,7 @@ target_sources(tap_tempo
         drivers/src/ssd1306.c
         utils/src/timer.c
         utils/src/cqueue.c
+        utils/src/text_renderer.c
         src/tap_tempo.c
 )
 

@@ -28,6 +28,7 @@ typedef enum
 } tap_tempo_indicator_state_t;
 
 typedef void tap_tempo_set_indicator_t(tap_tempo_indicator_state_t);
+typedef void tap_tempo_on_new_tempo_t(void* ctx, uint8_t new_tempo);
 
 typedef struct
 {
@@ -36,6 +37,8 @@ typedef struct
 	tap_tempo_set_indicator_t* set_indicator;
 	uint8_t duty_cycle_percentage;
 	uint8_t initial_tempo;
+	tap_tempo_on_new_tempo_t* on_new_tempo;
+	void* on_new_tempo_ctx;
 } tap_tempo_cfg_t;
 
 typedef struct
@@ -49,7 +52,10 @@ typedef struct
 	tap_tempo_set_indicator_t* set_indicator;
 	uint32_t high_duration_ticks;
 	uint32_t low_duration_ticks;
+	uint32_t tick_frequency_hz;
 	tap_tempo_indicator_state_t indicator_state;
+	tap_tempo_on_new_tempo_t* on_new_tempo;
+	void* on_new_tempo_ctx;
 
 	timer_t input_reset_timer;
 	get_ticks_t* get_ticks;
