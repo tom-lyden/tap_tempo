@@ -28,7 +28,7 @@ void TapTempo_Init(tap_tempo_t* tap_tempo, const tap_tempo_cfg_t* cfg)
 	tap_tempo->tick_frequency_hz = cfg->tick_frequency_hz;
 	tap_tempo->min_interval_ticks = tempo_to_period_ticks(cfg, TAP_TEMPO_MAX_BPM);
 	tap_tempo->max_interval_ticks = tempo_to_period_ticks(cfg, TAP_TEMPO_MIN_BPM);
-	tap_tempo->reset_interval_ticks = tap_tempo->max_interval_ticks + tap_tempo->max_interval_ticks / 2;
+	tap_tempo->reset_interval_ticks = tap_tempo->max_interval_ticks + tap_tempo->min_interval_ticks;
 	tap_tempo->duty_cycle_percentage = CLAMP(cfg->duty_cycle_percentage, TAP_TEMPO_MIN_DUTY_CYCLE, TAP_TEMPO_MAX_DUTY_CYCLE);
 
 	uint8_t clamped_tempo = CLAMP(cfg->initial_tempo, TAP_TEMPO_MIN_BPM, TAP_TEMPO_MAX_BPM);

@@ -8,7 +8,7 @@
 #include <text_renderer.h>
 
 #define TICK_FREQUENCY_HZ (1000)
-#define DEBOUNCE_MSEC (1)
+#define DEBOUNCE_MSEC (10)
 #define DEBOUNCE_TICKS (((TICK_FREQUENCY_HZ) * (DEBOUNCE_MSEC)) / 1000)
 #define TEMPO_STR_BUF_LEN (4)
 
