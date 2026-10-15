@@ -49,6 +49,11 @@ typedef struct
 } ssd1306_t;
 
 bool SSD1306_Init(ssd1306_t* ctrl, i2c_bus_t bus);
+
+/*
+ * Coordinate values must be within screen size range, i.e. x within [0, 128) and y within [0, 64).
+ * No input validation is performed.
+ */
 void SSD1306_SetPixel(ssd1306_t* ctrl, uint8_t x, uint8_t y, bool value);
 void SSD1306_SetAllPixels(ssd1306_t* ctrl, bool value);
 void SSD1306_Draw(ssd1306_t* ctrl);

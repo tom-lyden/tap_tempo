@@ -36,6 +36,11 @@ typedef struct
 	const char* text;
 } text_renderer_t;
 
+/* 
+ * Caller must supply a null-terminated string of ASCII bytes 0x20-0x7E only.
+ * Allowed scale is 1-36.
+ * No input validation is performed.
+ */
 void Text_Renderer_Render(const text_renderer_t* renderer);
 
 #endif // TAP_TEMPO_TEXT_RENDERER_H

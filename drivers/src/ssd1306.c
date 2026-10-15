@@ -46,8 +46,10 @@ static i2c_req_t init_device_i2c_req =
 };
 
 static bool is_transmission_done(const ssd1306_buffer_t* buffer);
+static bool is_any_page_transmission_failed(const ssd1306_buffer_t* buffer);
 static bool is_any_buffer_transmitting(const ssd1306_t* ctrl);
-static void write_i2c_reqs(i2c_bus_t bus, ssd1306_buffer_t* buffer);
+static bool is_any_page_transmitting(const ssd1306_buffer_t* buffer);
+static void write_i2c_reqs(ssd1306_buffer_t* buffer, i2c_bus_t bus);
 
 bool SSD1306_Init(ssd1306_t* ctrl, i2c_bus_t bus)
 {
@@ -67,6 +69,8 @@ bool SSD1306_Init(ssd1306_t* ctrl, i2c_bus_t bus)
 			
 			memcpy(&page->data.header, page_header, sizeof(page->data.header));
 			page->data.header[SSD1306_PAGE_HEADER_PAGE_START_INDEX] = SSD1306_CMD_SET_PAGE_START(j);
+			
+			memset(&page->data.bytes, 0, sizeof(page->data.bytes));
 			
 			page->i2c_req.register_addr = NULL;
 			page->i2c_req.register_addr_length = 0;
@@ -135,26 +139,67 @@ void SSD1306_Draw(ssd1306_t* ctrl)
 	
 	for (uint8_t page = 0; page < SSD1306_NUM_PAGES; page++)
 	{
-		bool is_dirty = memcmp(&buffer->pages[page].data, &other_buffer->pages[page].data, sizeof(buffer->pages[page].data)) != 0;
-		buffer->pages[page].is_dirty = is_dirty;
+		bool is_dirty = 
+			memcmp(&buffer->pages[page].data, &other_buffer->pages[page].data, sizeof(buffer->pages[page].data)) != 0;
+		
+		buffer->pages[page].is_dirty |= is_dirty;
 	}
 }
 
 void SSD1306_Update(ssd1306_t* ctrl)
 {
+	ssd1306_buffer_t* buffer = &ctrl->buffers[ctrl->current_buffer];
 	ssd1306_buffer_t* other_buffer = &ctrl->buffers[ctrl->current_buffer ^ 1];
+	ssd1306_buffer_t* trx_buffer = buffer;
+	ssd1306_buffer_t* draw_buffer = other_buffer;
 	
 	if (is_transmission_done(other_buffer))
-		other_buffer->state = SSD1306_BUFFER_STATE_DRAWING;
-	
-	ssd1306_buffer_t* buffer = &ctrl->buffers[ctrl->current_buffer];
-	
-	if (!is_any_buffer_transmitting(ctrl) && buffer->state == SSD1306_BUFFER_STATE_PENDING)
 	{
-		buffer->state = SSD1306_BUFFER_STATE_TRANSMITTING;
-		write_i2c_reqs(ctrl->bus, buffer);
-		ctrl->current_buffer ^= 1;
+		if (is_any_page_transmission_failed(other_buffer) && buffer->state == SSD1306_BUFFER_STATE_DRAWING)
+		{
+			// Retransmit failures on the same buffer if no frame pending
+			trx_buffer = other_buffer;
+			trx_buffer->state = SSD1306_BUFFER_STATE_PENDING;
+			draw_buffer = buffer;
+		}
+			
+		draw_buffer->state = SSD1306_BUFFER_STATE_DRAWING;
+		
+		for (uint8_t page = 0; page < SSD1306_NUM_PAGES; page++)
+		{
+			draw_buffer->pages[page].is_dirty = false;
+				
+			bool is_page_trx_failed = other_buffer->pages[page].i2c_req.state == I2C_BUS_REQ_ERROR;
+			
+			if (trx_buffer == other_buffer)
+				trx_buffer->pages[page].is_dirty = is_page_trx_failed; // Only transmit failures on retry
+			else
+				trx_buffer->pages[page].is_dirty |= is_page_trx_failed; // Transmit previous failures and dirty pages 
+		}
 	}
+	
+	if (!is_any_buffer_transmitting(ctrl) && trx_buffer->state == SSD1306_BUFFER_STATE_PENDING)
+	{
+		trx_buffer->state = SSD1306_BUFFER_STATE_TRANSMITTING;
+		write_i2c_reqs(trx_buffer, ctrl->bus);
+		
+		// Retrying a buffer transmission must leave the current drawing target unchanged
+		if (trx_buffer == &ctrl->buffers[ctrl->current_buffer])
+			ctrl->current_buffer ^= 1;
+	}
+}
+
+static bool is_any_page_transmitting(const ssd1306_buffer_t* buffer)
+{
+	for (uint8_t page = 0; page < SSD1306_NUM_PAGES; page++)
+	{
+		if (buffer->pages[page].is_dirty && 
+			buffer->pages[page].i2c_req.state != I2C_BUS_REQ_DONE &&
+			buffer->pages[page].i2c_req.state != I2C_BUS_REQ_ERROR)
+			return true;
+	}
+	
+	return false;
 }
 
 static bool is_transmission_done(const ssd1306_buffer_t* buffer)
@@ -166,22 +211,19 @@ static bool is_transmission_done(const ssd1306_buffer_t* buffer)
 		case SSD1306_BUFFER_STATE_PENDING:
 			return false;
 		case SSD1306_BUFFER_STATE_TRANSMITTING:
-		{
-			for (uint8_t page = 0; page < SSD1306_NUM_PAGES; page++)
-			{
-				if (buffer->pages[page].is_dirty && 
-					buffer->pages[page].i2c_req.state != I2C_BUS_REQ_DONE &&
-					buffer->pages[page].i2c_req.state != I2C_BUS_REQ_ERROR)
-					return false;
-			}
-			
-			break;
-		}
+			return !is_any_page_transmitting(buffer);
 		default:
 			__builtin_unreachable();
 	}
+}
+
+static bool is_any_page_transmission_failed(const ssd1306_buffer_t* buffer)
+{
+	for (uint8_t page = 0; page < SSD1306_NUM_PAGES; page++)
+		if (buffer->pages[page].i2c_req.state == I2C_BUS_REQ_ERROR)
+			return true;
 	
-	return true;
+	return false;
 }
 
 static bool is_any_buffer_transmitting(const ssd1306_t* ctrl)
@@ -193,7 +235,7 @@ static bool is_any_buffer_transmitting(const ssd1306_t* ctrl)
 	return false;
 }
 
-static void write_i2c_reqs(i2c_bus_t bus, ssd1306_buffer_t* buffer)
+static void write_i2c_reqs(ssd1306_buffer_t* buffer, i2c_bus_t bus)
 {
 	for (uint8_t page = 0; page < SSD1306_NUM_PAGES; page++)
 	{
