@@ -22,7 +22,7 @@ static const uint8_t init_cmd_buffer[] =
 	SSD1306_CMD_SET_DISPLAY(true)
 };
 
-static const uint8_t page_header[] = 
+static const uint8_t page_header[SSD1306_DATA_HEADER_LENGTH] = 
 {
 	SSD1306_CMD_CONTINUATION, 
 	SSD1306_CMD_SET_PAGE_START(0), 
@@ -77,6 +77,7 @@ bool SSD1306_Init(ssd1306_t* ctrl, i2c_bus_t bus)
 			page->i2c_req.device_address = device_address;
 			page->i2c_req.data_buffer = (const uint8_t *)&page->data;
 			page->i2c_req.data_length = sizeof(page->data);
+			page->i2c_req.state = I2C_BUS_REQ_DONE;
 		}
 	}
 	
