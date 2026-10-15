@@ -15,6 +15,8 @@
 #define SSD1306_NUM_PAGES (8)
 #define SSD1306_NUM_BUFFERS (2)
 
+#define SSD1306_DATA_HEADER_LENGTH (7)
+
 typedef enum
 {
 	SSD1306_BUFFER_STATE_DRAWING = 0,
@@ -24,7 +26,7 @@ typedef enum
 
 typedef struct
 {
-	uint8_t header[7];
+	uint8_t header[SSD1306_DATA_HEADER_LENGTH];
 	uint8_t bytes[SSD1306_NUM_COLUMNS];
 } ssd1306_data_t;
 

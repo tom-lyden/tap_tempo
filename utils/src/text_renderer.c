@@ -108,10 +108,10 @@ static void render_char(const text_renderer_t* renderer, const uint8_t* char_map
 
 static void render_spacing(const text_renderer_t* renderer, int origin_x, int origin_y)
 {
-	if (origin_x <= -renderer->scale * FONT_SPACING || origin_x > renderer->width - renderer->scale * FONT_SPACING)
+	if (origin_x <= -renderer->scale * FONT_SPACING || origin_x >= renderer->width)
 		return;
 	
-	if (origin_y <= -renderer->scale * FONT_HEIGHT || origin_y > renderer->height - renderer->scale * FONT_HEIGHT)
+	if (origin_y <= -renderer->scale * FONT_HEIGHT || origin_y >= renderer->height)
 		return;
 	
 	for (uint8_t i = 0; i < renderer->scale; i++)

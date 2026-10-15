@@ -32,10 +32,12 @@ bool Button_Init(button_t* button, const button_cfg_t* cfg)
 		.callback_arg = button
 	};
 
+	gpio_pupd_t pupd = cfg->active_level == BUTTON_ACTIVE_LOW ? GPIO_PUPD_PULLUP : GPIO_PUPD_PULLDOWN;
+	
 	gpio_config_t gpio_input_init =
 	{
 		.mode = GPIO_MODE_INPUT,
-		.pupd = GPIO_PUPD_PULLDOWN,
+		.pupd = pupd,
 	};
 
 	GPIO_Init(button->gpio_port, button->gpio_pin, &gpio_input_init);
